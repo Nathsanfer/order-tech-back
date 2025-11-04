@@ -68,6 +68,7 @@ model Menu {
   description String
   cost        Float
   size        String?
+  imageUrl    String
 
   orders Order_Menu[]
 

@@ -17,5 +17,5 @@ app.use("/", routes);
 
 // Iniciar o servidor
 app.listen(port, () => {
-  console.log(`🍳 Servidor da API de Receitas rodando na porta ${port}`);
+  console.log(`🍳 Servidor da OrderTech rodando na porta ${port}`);
 });
