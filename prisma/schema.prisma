@@ -31,3 +31,60 @@ model Recipe {
 
   @@map("recipes")
 }
+
+model User {
+  id_user  Int    @id @default(autoincrement())
+  nickname String
+  password String
+
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Order {
+  id_order       Int    @id @default(autoincrement())
+  id_user        Int
+  status         String
+  password_panel String
+  total_cost     Float
+
+  user  User         @relation(fields: [id_user], references: [id_user])
+  items Order_Menu[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model Menu {
+  id_item     Int     @id @default(autoincrement())
+  name        String
+  type        String
+  description String
+  cost        Float
+  size        String?
+
+  orders Order_Menu[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("items")
+}
+
+model Order_Menu {
+  id_order    Int
+  id_item     Int
+  quantity    Int
+  observation String?
+
+  order Order @relation(fields: [id_order], references: [id_order])
+  menu  Menu  @relation(fields: [id_item], references: [id_item])
+
+  @@id([id_order, id_item])
+}
