@@ -13,25 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Recipe {
-  id           Int    @id @default(autoincrement())
-  name         String
-  category     String
-  time         Int
-  cuisine      String
-  servings     Int
-  rating       Float  @default(0)
-  description  String
-  ingredients  String
-  instructions String
-  imageUrl     String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("recipes")
-}
-
 model User {
   id_user  Int    @id @default(autoincrement())
   nickname String
