@@ -1,5 +1,6 @@
 // Seed com recipes fornecidos pelo usuário
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 function sizeToServings(size) {
@@ -67,6 +68,11 @@ const recipes = [
 
 async function main() {
   console.log("Iniciando seed de recipes...\nTotal a inserir:", recipes.length);
+
+  // criar um usuário de exemplo (admin) com senha hasheada
+  const adminPasswordPlain = process.env.SEED_ADMIN_PWD || "changeme123";
+  const adminHash = await bcrypt.hash(adminPasswordPlain, 10);
+  await prisma.user.create({ data: { nickname: "admin", password: adminHash } });
 
   // opcional: limpar receitas existentes
   // await prisma.recipe.deleteMany({});
