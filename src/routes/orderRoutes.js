@@ -1,22 +1,23 @@
 import express from "express";
-import RecipeController from "../controllers/recipeController.js";
+import OrderController from "../controllers/orderController.js";
 
-const recipeRouter = express.Router();
+const orderRouter = express.Router();
 
-// Rotas de Receitas
-// GET /api/recipes - Listar todas as receitas
-recipeRouter.get("/", RecipeController.getAll);
+// Rotas de Pedidos
 
-// GET /api/recipes/:id - Obter uma receita pelo ID
-recipeRouter.get("/:id", RecipeController   .getById);
+// GET /api/orders - Listar todas os pedidos
+orderRouter.get("/", OrderController.getAll);
 
-// POST /api/recipes - Criar uma nova receita
-recipeRouter.post("/", RecipeController.create);
+// GET /api/orders/:id - Obter um pedido pelo ID
+orderRouter.get("/:id", OrderController.getById);
 
-// PUT /api/recipes/:id - Atualizar uma receita
-recipeRouter.put("/:id", RecipeController.update);
+// POST /api/orders - Criar um novo pedido
+orderRouter.post("/", OrderController.create);
 
-// DELETE /api/recipes/:id - Remover uma receita
-recipeRouter.delete("/:id", RecipeController.delete);
+// PUT /api/orders/:id - Atualizar um pedido
+orderRouter.put("/:id", OrderController.update);
 
-export default recipeRouter;
+// DELETE /api/orders/:id - Remover um pedido
+orderRouter.delete("/:id", OrderController.delete);
+
+export default orderRouter;
