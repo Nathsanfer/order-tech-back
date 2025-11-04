@@ -1,90 +1,78 @@
 import prisma from "../../prisma/prisma.js";
 
-class RecipeModel {
-  // Obter todas as receitas 
+class OrderModel {
+  // Obter todas os pedidos
   async findAll() {
-    const recipes = await prisma.recipe.findMany({
+    const orders = await prisma.order.findMany({
       orderBy: {
         createdAt: "asc",
       },
     });
 
-    return recipes;
+    return orders;
   }
 
-  // Obter uma receita pelo ID
-  async findById(id) {
-    const recipe = await prisma.recipe.findUnique({
+  // Obter um pedido pelo ID
+  async findById(id_order) {
+    const order = await prisma.order.findUnique({
       where: {
-        id: Number(id),
+        id: Number(id_order),
       },
     });
 
-    return recipe;
+    return order;
   }
 
-  // Criar uma nova receita
-  async create(name, category, time, cuisine, servings, rating, description, ingredients, instructions, imageUrl) {
-    const newRecipe = await prisma.recipe.create({
+  // Criar um novo pedido
+  async create(id_user, status, password_panel, total_cost) {
+    const newOrder = await prisma.order.create({
       data: {
-        name, 
-        category, 
-        time, 
-        cuisine, 
-        servings, 
-        rating, 
-        description, 
-        ingredients, 
-        instructions, 
-        imageUrl
+        id_user,
+        status,
+        password_panel,
+        total_cost,
       },
     });
 
-    return newRecipe;
+    return newOrder;
   }
 
-  // Atualizar uma receita
-  async update(id, name, category, time, cuisine, servings, rating, description, ingredients, instructions, imageUrl) {
-    const recipe = await this.findById(id);
+  // Atualizar um pedido
+  async update(id_user, status, password_panel, total_cost) {
+    const order = await this.findById(id_order);
 
-    if (!recipe) {
+    if (!order) {
       return null;
     }
 
     // Atualiza apenas os campos que foram enviados
     const data = {};
-    if (name !== undefined) data.name = name;
-    if (category !== undefined) data.category = category;
-    if (time !== undefined) data.time = time;
-    if (cuisine !== undefined) data.cuisine = cuisine;
-    if (servings !== undefined) data.servings = servings;
-    if (rating !== undefined) data.rating = rating;
-    if (description !== undefined) data.description = description;
-    if (ingredients !== undefined) data.ingredients = ingredients;
-    if (instructions !== undefined) data.instructions = instructions;
-    if (imageUrl !== undefined) data.imageUrl = imageUrl;
+    if (id_user !== undefined) data.id_user = id_user;
+    if (status !== undefined) data.status = status;
+    if (password_panel !== undefined) data.password_panel = password_panel;
+    if (total_cost !== undefined) data.total_cost = total_cost;
 
-    const recipeUpdated = await prisma.recipe.update({
+    const orderUpdated = await prisma.order.update({
       where: {
-        id: Number(id),
+        id: Number(id_order),
       },
       data,
     });
 
-    return recipeUpdated;
+    return orderUpdated;
   }
 
-  // Remover uma receita
-  async delete(id) {
-    const recipe = await this.findById(id);
+  // Remover um pedido
+  async delete(id_order) {
+    const order = await this.findById(id_order);
 
-    if (!recipe) {
+    if (!order) {
       return null;
     }
 
-    await prisma.recipe.delete({
+    await prisma.order.delete({
       where: {
-        id: Number(id),
+        id: Number(id_order),
       },
     });
 
@@ -92,4 +80,4 @@ class RecipeModel {
   }
 }
 
-export default new RecipeModel();
+export default new OrderModel();
