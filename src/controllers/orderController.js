@@ -66,11 +66,13 @@ class OrderController {
   async update(req, res) {
     try {
       const { id_order } = req.params;
-      const { status } = req.body;
+      const { status, password_panel, total_cost } = req.body;
 
       const updatedOrder = await OrderModel.update(
         id_order,
-        status
+        status,
+        password_panel,
+        total_cost
       );
 
       if (!updatedOrder) {
