@@ -109,6 +109,24 @@
       }
     },
     {
+      "name": "Order - Create with items",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_user\": 1,\n  \"status\": \"pending\",\n  \"password_panel\": \"1234\",\n  \"items\": [\n    { \"id_item\": 102, \"quantity\": 2 },\n    { \"id_item\": 114, \"quantity\": 1 }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/orders/with-items",
+          "host": ["{{base_url}}"],
+          "path": ["orders","with-items"]
+        }
+      }
+    },
+    {
       "name": "Order_Menu - Create",
       "request": {
         "method": "POST",

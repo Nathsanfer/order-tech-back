@@ -75,6 +75,7 @@ const users = [
   { nickname: "bob", password: "bobpass" },
   { nickname: "carol", password: "carolpass" },
   { nickname: "dave", password: "davepass" },
+  { nickname: "guest", password: "guest" },
 ];
 
 async function main() {
