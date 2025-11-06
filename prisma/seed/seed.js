@@ -81,10 +81,36 @@ const users = [
 async function main() {
   const shouldClean = process.env.SEED_CLEAN !== "0";
   if (shouldClean) {
-    console.log("Limpando tabela 'items' (Menu)...");
-    await prisma.menu.deleteMany({});
-    console.log("Limpando tabela 'users'...");
-    await prisma.user.deleteMany({});
+    // quando limpar, precisamos apagar na ordem das dependências
+    // order_menu -> orders -> menu -> users (users referenciados por orders)
+    try {
+      console.log("Limpando tabela 'order_menu'...");
+      await prisma.order_Menu.deleteMany({});
+    } catch (e) {
+      // pode falhar se a tabela não existir ou não houver dados
+      console.warn('Aviso ao limpar order_menu:', e.message || e);
+    }
+
+    try {
+      console.log("Limpando tabela 'orders'...");
+      await prisma.order.deleteMany({});
+    } catch (e) {
+      console.warn('Aviso ao limpar orders:', e.message || e);
+    }
+
+    try {
+      console.log("Limpando tabela 'items' (Menu)...");
+      await prisma.menu.deleteMany({});
+    } catch (e) {
+      console.warn('Aviso ao limpar menu:', e.message || e);
+    }
+
+    try {
+      console.log("Limpando tabela 'users'...");
+      await prisma.user.deleteMany({});
+    } catch (e) {
+      console.warn('Aviso ao limpar users:', e.message || e);
+    }
   }
 
   for (const it of items) {
