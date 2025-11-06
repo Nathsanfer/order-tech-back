@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -68,11 +69,21 @@ const items = [
   { name: "Churros Gourmet c/ Doce de Leite", type: "Sobremesa", description: "Palitos de churros caseiros servidos com doce de leite.", cost: 16.5, size: "4 Unidades" , imageUrl: "https://"},
 ];
 
+// Usuários de exemplo que queremos inserir (4 usuários)
+const users = [
+  { nickname: "alice", password: "alicepass" },
+  { nickname: "bob", password: "bobpass" },
+  { nickname: "carol", password: "carolpass" },
+  { nickname: "dave", password: "davepass" },
+];
+
 async function main() {
   const shouldClean = process.env.SEED_CLEAN !== "0";
   if (shouldClean) {
     console.log("Limpando tabela 'items' (Menu)...");
     await prisma.menu.deleteMany({});
+    console.log("Limpando tabela 'users'...");
+    await prisma.user.deleteMany({});
   }
 
   for (const it of items) {
@@ -84,6 +95,21 @@ async function main() {
       await prisma.menu.create({ data: it });
     }
   }
+
+  // Inserir/atualizar usuários (idempotente)
+  console.log("Aplicando seed de usuários...");
+  for (const u of users) {
+    const hashed = bcrypt.hashSync(u.password, 10);
+    const exists = await prisma.user.findFirst({ where: { nickname: u.nickname } });
+    if (exists) {
+      await prisma.user.update({ where: { id_user: exists.id_user }, data: { password: hashed } });
+    } else {
+      await prisma.user.create({ data: { nickname: u.nickname, password: hashed } });
+    }
+  }
+
+  const totalUsers = await prisma.user.count();
+  console.log(`Seed de Users concluído. Total de users na tabela: ${totalUsers}`);
 
   const total = await prisma.menu.count();
   console.log(`Seed de Menu concluído. Total de items na tabela: ${total}`);

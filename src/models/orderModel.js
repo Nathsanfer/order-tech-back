@@ -16,7 +16,7 @@ class OrderModel {
   async findById(id_order) {
     const order = await prisma.order.findUnique({
       where: {
-        id: Number(id_order),
+        id_order: Number(id_order),
       },
     });
 
@@ -27,7 +27,7 @@ class OrderModel {
   async create(id_user, status, password_panel, total_cost) {
     const newOrder = await prisma.order.create({
       data: {
-        id_user,
+        id_user: Number(id_user),
         status,
         password_panel,
         total_cost,
@@ -38,7 +38,7 @@ class OrderModel {
   }
 
   // Atualizar um pedido
-  async update(id_user, status, password_panel, total_cost) {
+  async update(id_order, status, password_panel, total_cost) {
     const order = await this.findById(id_order);
 
     if (!order) {
@@ -54,7 +54,7 @@ class OrderModel {
 
     const orderUpdated = await prisma.order.update({
       where: {
-        id: Number(id_order),
+        id_order: Number(id_order),
       },
       data,
     });
@@ -72,7 +72,7 @@ class OrderModel {
 
     await prisma.order.delete({
       where: {
-        id: Number(id_order),
+        id_order: Number(id_order),
       },
     });
 
