@@ -20,9 +20,9 @@ class OrderController {
   // GET /api/orders/:id
   async getById(req, res) {
     try {
-      const { id_order } = req.params;
+      const { id } = req.params;
 
-      const order = await OrderModel.findById(id_order);
+      const order = await OrderModel.findById(id);
 
       if (!order) {
         return res.status(404).json({ error: "Pedido não encontrado" });
@@ -40,7 +40,7 @@ class OrderController {
     try {
       const { id_user, status, password_panel, total_cost } = req.body;
 
-      if (!id_user || !status || !password_panel || !total_cost) {
+      if (!id_user || !status || !password_panel || total_cost === undefined) {
         return res.status(400).json({ error: "Os campos de ID do usuário, status do pedido, senha do painel e total do pedido são obrigatórios" });
       }
 
@@ -65,11 +65,11 @@ class OrderController {
   // PUT /api/orders/:id
   async update(req, res) {
     try {
-      const { id_order } = req.params;
+      const { id } = req.params;
       const { status, password_panel, total_cost } = req.body;
 
       const updatedOrder = await OrderModel.update(
-        id_order,
+        id,
         status,
         password_panel,
         total_cost
@@ -89,9 +89,9 @@ class OrderController {
   // DELETE /api/orders/:id
   async delete(req, res) {
     try {
-      const { id_order } = req.params;
+      const { id } = req.params;
 
-      const result = await OrderModel.delete(id_order);
+      const result = await OrderModel.delete(id);
 
       if (!result) {
         return res.status(404).json({ error: "Pedido não encontrado" });
@@ -101,6 +101,43 @@ class OrderController {
     } catch (error) {
       console.error("Erro ao remover pedido:", error);
       res.status(500).json({ error: "Erro ao remover pedido" });
+    }
+  }
+
+
+  // POST /api/orders/with-items
+  // Payload: { id_user, status, password_panel, items: [{ id_item, quantity, observation }] }
+  async createWithItems(req, res) {
+    try {
+      const { id_user, status, password_panel, items } = req.body;
+
+      if (!id_user || !items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: "Campos obrigatórios: id_user, items (array não vazio)" });
+      }
+
+      const created = await OrderModel.createWithItems(id_user, status ?? "pending", password_panel ?? null, items);
+
+      res.status(201).json(created);
+    } catch (error) {
+      console.error("Erro ao criar pedido com items:", error);
+      res.status(500).json({ error: "Erro ao criar pedido com items" });
+    }
+  }
+  // POST /api/orders/with-items
+  async createWithItems(req, res) {
+    try {
+      const { id_user, status, password_panel, items } = req.body;
+
+      if (!id_user || !status || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: "Campos obrigatórios: id_user, status e items (array não vazio)." });
+      }
+
+      const result = await OrderModel.createWithItems(id_user, status, password_panel ?? null, items);
+
+      res.status(201).json(result);
+    } catch (error) {
+      console.error("Erro ao criar pedido com itens:", error);
+      res.status(500).json({ error: "Erro ao criar pedido com itens", details: error.message });
     }
   }
 }

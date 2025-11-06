@@ -26,7 +26,7 @@ class UserModel {
 
       const user = await prisma.user.findUnique({
         where: {
-          id: Number(id_user),
+          id_user: Number(id_user),
         },
       });
 
@@ -48,7 +48,6 @@ class UserModel {
         data: {
           nickname,
           password,
-          orders,
         },
       });
 
@@ -60,7 +59,7 @@ class UserModel {
   }
 
   // Atualizar um usuário
-  async update(id_user, nickname, password, orders) {
+  async update(id_user, nickname, password) {
     try {
       if (!id_user) {
         throw new Error("ID do usuário é obrigatório.");
@@ -76,11 +75,10 @@ class UserModel {
       const data = {};
       if (nickname !== undefined) data.nickname = nickname;
       if (password !== undefined) data.password = password;
-      if (orders !== undefined) data.orders = orders;
 
       const userUpdated = await prisma.user.update({
         where: {
-          id: Number(id_user),
+          id_user: Number(id_user),
         },
         data,
       });
@@ -107,7 +105,7 @@ class UserModel {
 
       await prisma.user.delete({
         where: {
-          id: Number(id_user),
+          id_user: Number(id_user),
         },
       });
 

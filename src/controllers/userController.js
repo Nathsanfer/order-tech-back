@@ -7,9 +7,12 @@ class UserController {
       const users = await UserModel.findAll();
       const total = users.length;
 
+      // remover password das respostas
+      const safeUsers = users.map(u => ({ id_user: u.id_user, nickname: u.nickname, createdAt: u.createdAt, updatedAt: u.updatedAt }));
+
       res.json({
         message: `Total de ${total} usuário${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`,
-        users,
+        users: safeUsers,
       });
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
@@ -28,7 +31,10 @@ class UserController {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
 
-      res.json(user);
+      // remover password antes de responder
+      const safeUser = { id_user: user.id_user, nickname: user.nickname, createdAt: user.createdAt, updatedAt: user.updatedAt };
+
+      res.json(safeUser);
     } catch (error) {
       console.error("Erro ao buscar usuário:", error);
       res.status(500).json({ error: "Erro ao buscar usuário" });
