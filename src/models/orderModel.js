@@ -23,6 +23,16 @@ class OrderModel {
     return order;
   }
 
+  // Obter um pedido com os itens (inclui menu)
+  async findByIdWithItems(id_order) {
+    const order = await prisma.order.findUnique({
+      where: { id_order: Number(id_order) },
+      include: { items: { include: { menu: true } } },
+    });
+
+    return order;
+  }
+
   // Criar um novo pedido
   async create(id_user, status, password_panel, total_cost) {
     const newOrder = await prisma.order.create({
@@ -139,7 +149,6 @@ class OrderModel {
 
     // Atualiza apenas os campos que foram enviados
     const data = {};
-    if (id_user !== undefined) data.id_user = id_user;
     if (status !== undefined) data.status = status;
     if (password_panel !== undefined) data.password_panel = password_panel;
     if (total_cost !== undefined) data.total_cost = total_cost;

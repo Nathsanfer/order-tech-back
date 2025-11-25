@@ -1,4 +1,5 @@
 import OrderModel from "../models/orderModel.js";
+import UserModel from "../models/userModel.js";
 
 class OrderController {
   // GET /api/orders
@@ -138,6 +139,71 @@ class OrderController {
     } catch (error) {
       console.error("Erro ao criar pedido com itens:", error);
       res.status(500).json({ error: "Erro ao criar pedido com itens", details: error.message });
+    }
+  }
+
+  // POST /api/orders/:id/pay
+  // Protegido por JWT: obter id_user do token (req.user)
+  // Body: { payment_method: 'pix'|'debit'|'credit'|'cash', payment_data? }
+  async pay(req, res) {
+    try {
+      const { id } = req.params;
+      const { payment_method, payment_data } = req.body;
+
+      const tokenUser = req.user;
+      if (!tokenUser || !tokenUser.id_user) {
+        return res.status(401).json({ error: "Usuário não autenticado" });
+      }
+
+      if (!payment_method) {
+        return res.status(400).json({ error: "Campo obrigatório: payment_method" });
+      }
+
+      const order = await OrderModel.findById(id);
+      if (!order) return res.status(404).json({ error: "Pedido não encontrado" });
+
+      if (Number(order.id_user) !== Number(tokenUser.id_user)) {
+        return res.status(403).json({ error: "Pedido não pertence ao usuário autenticado" });
+      }
+
+      const total = order.total_cost;
+
+      if (payment_method === "cash") {
+        // marcar aguardando pagamento em caixa
+        await OrderModel.update(id, "awaiting_cash", undefined, undefined);
+
+        const orderWithItems = await OrderModel.findByIdWithItems(id);
+
+        const receipt = {
+          title: "Nota de Venda (simulada)",
+          orderId: order.id_order,
+          items: orderWithItems.items?.map((it) => ({ id_item: it.id_item, name: it.menu?.name, quantity: it.quantity, price: it.menu?.cost })) ?? [],
+          total,
+          instructions: "Imprima esta nota e dirija-se ao caixa para efetuar o pagamento em dinheiro.",
+          timestamp: new Date().toISOString(),
+        };
+
+        return res.json({ payment: "cash", status: "awaiting_cash", receipt });
+      }
+
+      // simular transação instantânea para pix/debit/credit
+      const txId = `txn_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+      await OrderModel.update(id, "paid", undefined, undefined);
+
+      const paymentResult = {
+        transactionId: txId,
+        method: payment_method,
+        amount: total,
+        timestamp: new Date().toISOString(),
+        message: "Pagamento simulado aprovado",
+      };
+
+      const orderWithItems = await OrderModel.findByIdWithItems(id);
+
+      return res.json({ payment: paymentResult, status: "paid", order: orderWithItems });
+    } catch (error) {
+      console.error("Erro ao processar pagamento:", error);
+      res.status(500).json({ error: "Erro ao processar pagamento", details: error.message });
     }
   }
 }

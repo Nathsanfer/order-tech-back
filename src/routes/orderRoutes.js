@@ -1,5 +1,6 @@
 import express from "express";
 import OrderController from "../controllers/orderController.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 
 const orderRouter = express.Router();
 
@@ -18,6 +19,10 @@ orderRouter.post("/with-items", OrderController.createWithItems);
 
 // POST /api/orders/with-items - Criar pedido + itens em um único request
 orderRouter.post("/with-items", OrderController.createWithItems);
+
+// POST /api/orders/:id/pay - Simular pagamento do pedido
+// Protege o endpoint de pagamento com JWT
+orderRouter.post("/:id/pay", authMiddleware, OrderController.pay);
 
 // PUT /api/orders/:id - Atualizar um pedido
 orderRouter.put("/:id", OrderController.update);

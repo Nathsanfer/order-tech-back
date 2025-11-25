@@ -1,4 +1,5 @@
 import prisma from "../../prisma/prisma.js";
+import bcrypt from "bcryptjs";
 
 class UserModel {
   // Obter todos os usuários
@@ -37,6 +38,18 @@ class UserModel {
     }
   }
 
+  // Encontrar usuário por nickname (útil para login)
+  async findByNickname(nickname) {
+    try {
+      if (!nickname) throw new Error("Nickname é obrigatório.");
+      const user = await prisma.user.findFirst({ where: { nickname } });
+      return user;
+    } catch (error) {
+      console.error(`Erro ao buscar usuário com nickname ${nickname}:`, error);
+      throw new Error("Erro ao buscar usuário.");
+    }
+  }
+
   // Criar um novo usuário
   async create(nickname, password, orders) {
     try {
@@ -44,10 +57,13 @@ class UserModel {
         throw new Error("Nickname e senha são obrigatórios.");
       }
 
+      // Hash da senha antes de gravar
+      const hashed = bcrypt.hashSync(password, 10);
+
       const newUser = await prisma.user.create({
         data: {
           nickname,
-          password,
+          password: hashed,
         },
       });
 
@@ -74,7 +90,7 @@ class UserModel {
       // Atualiza apenas os campos que foram enviados
       const data = {};
       if (nickname !== undefined) data.nickname = nickname;
-      if (password !== undefined) data.password = password;
+      if (password !== undefined) data.password = bcrypt.hashSync(password, 10);
 
       const userUpdated = await prisma.user.update({
         where: {

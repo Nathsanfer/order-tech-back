@@ -52,7 +52,10 @@ class UserController {
 
       const newUser = await UserModel.create(nickname, password, orders);
 
-      res.status(201).json(newUser);
+      // Não expor a senha na resposta
+      const safeUser = { id_user: newUser.id_user, nickname: newUser.nickname, createdAt: newUser.createdAt, updatedAt: newUser.updatedAt };
+
+      res.status(201).json(safeUser);
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       res.status(500).json({ error: "Erro ao criar usuário" });
@@ -71,7 +74,9 @@ class UserController {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
 
-      res.json(updatedUser);
+      const safeUser = { id_user: updatedUser.id_user, nickname: updatedUser.nickname, createdAt: updatedUser.createdAt, updatedAt: updatedUser.updatedAt };
+
+      res.json(safeUser);
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
       res.status(500).json({ error: "Erro ao atualizar usuário" });
