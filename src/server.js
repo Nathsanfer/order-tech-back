@@ -19,6 +19,8 @@ app.use(express.json()); // Parse de JSON
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
+app.use('/public', express.static(path.join(__dirname, '..', 'public')));
+app.use('/img', express.static(path.join(__dirname, '..', 'public', 'img')));
 
 app.use("/", routes);
 
