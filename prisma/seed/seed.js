@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 const items = [
   // Lanches
-  { name: "Big Smash", type: "Lanche", description: "Duplo smash burger 100% bovino, cheddar derretido, picles, cebola grelhada e molho especial da casa no pão brioche amanteigado.", cost: 25.0, size: null, imageUrl: "/public/img/big-smach.png" },
+  { name: "Big Smash", type: "Lanche", description: "Duplo smash burger 100% bovino, cheddar derretido, picles, cebola grelhada e molho especial da casa no pão brioche amanteigado.", cost: 25.0, size: null, imageUrl: "/public/img/big-smash.png" },
   { name: "Fire Bacon", type: "Lanche", description: "Hambúrguer de carne premium, cheddar, bacon crocante e molho picante defumado.", cost: 27.0, size: null, imageUrl: "/public/img/fire-bacon.png" },
   { name: "Golden Crispy Chicken", type: "Lanche", description: "Frango empanado super crocante, alface americana, maionese temperada e pão de batata.", cost: 24.0, size: null , imageUrl: "/public/img/golden-crispy-chicken.png"},
   { name: "Cheese Lovers", type: "Lanche", description: "Hambúrguer bovino duplo com cheddar, queijo prato e molho de queijo cremoso.", cost: 28.0, size: null, imageUrl: "/public/img/cheese-lovers.png" },
