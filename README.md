@@ -26,7 +26,7 @@ npm install
 3. Crie um arquivo `.env` na raiz (exemplo mínimo):
 
 ```env
-PORT=5000
+PORT=5001
 DATABASE_URL="file:./dev.db"
 JWT_SECRET="your_jwt_secret_here"
 ```
